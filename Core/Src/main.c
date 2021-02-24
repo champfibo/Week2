@@ -47,6 +47,8 @@ UART_HandleTypeDef huart2;
 uint16_t ButtonMatrixState = 0;
 uint32_t ButtonMatrixTimeStamp = 0;
 int a=0;
+int count = 1;
+uint64_t  ans = 0b0;
 
 /* USER CODE END PV */
 
@@ -317,75 +319,78 @@ void ButtonMatrixUpdate()
 
   uint8_t NextOutputPin = ButtonMatrixLine + 4;
   HAL_GPIO_WritePin(ButtonMatrixPort[NextOutputPin], ButtonMatrixPin[NextOutputPin], GPIO_PIN_RESET);
- uint64_t  ans = 0b0;
- int count = 1;
-  if (ButtonMatrixState == 64 && count == 1)
+
+
+
+  if (ButtonMatrixState == 64 && count == 1 && ButtonMatrixState != 0)
   {
 	  ans =(((uint64_t)ans << 11)||0b10000000000);
 	  count +=1;
+
   }
-  else if (ButtonMatrixState == 512 && count ==2)
+  else if (ButtonMatrixState == 512 && count ==2 && ButtonMatrixState != 0)
     {
 	  ans =((uint64_t)ans )||0b11000000000;
 	  count +=1;
+	  a=1;
     }
-  else if (ButtonMatrixState == 1024 && count ==3)
+  else if (ButtonMatrixState == 1024 && count ==3 && ButtonMatrixState  != 0)
      {
  	  ans =(((uint64_t)ans )||0b11100000000);
  	 count +=1;
      }
-  else if (ButtonMatrixState == 16 && count ==4)
+  else if (ButtonMatrixState == 16 && count ==4 && ButtonMatrixState  != 0)
        {
    	  ans =((uint64_t)ans )||0b11110000000;
    	count +=1;
        }
-  else if (ButtonMatrixState == 4096 || count ==5 )
+  else if (ButtonMatrixState == 4096 && count ==5 && ButtonMatrixState  != 0)
          {
      	  ans =((uint64_t)ans )||0b11111000000;
      	 count +=1;
          }
-  else if (ButtonMatrixState == 32 ||count ==6)
+  else if (ButtonMatrixState == 32 && count ==6 && ButtonMatrixState  != 0)
            {
        	  ans =((uint64_t)ans)||0b11111100000;
        	count +=1;
            }
-  else if (ButtonMatrixState == 4096 || count ==7 )
+  else if (ButtonMatrixState == 4096 && count ==7 &&ButtonMatrixState  != 0)
            {
        	  ans =((uint64_t)ans )||0b11111110000;
        	count +=1;
            }
-  else if (ButtonMatrixState == 4096 || count ==8)
+  else if (ButtonMatrixState == 4096 && count ==8 && ButtonMatrixState  != 0)
             {
         	  ans =((uint64_t)ans )||0b11111111000;
         	  count +=1;
             }
-  else if (ButtonMatrixState == 4096 || count ==9)
+  else if (ButtonMatrixState == 4096 && count ==9 && ButtonMatrixState  != 0)
              {
          	  ans =((uint64_t)ans )||0b11111111100;
          	 count +=1;
              }
-  else if (ButtonMatrixState == 1024 && count ==10)
+  else if (ButtonMatrixState == 1024 && count ==10 && ButtonMatrixState  != 0)
       {
   	  ans =(((uint64_t)ans )||0b11111111110);
   	 count +=1;
       }
 
-  else if (ButtonMatrixState == 1 && count ==11)
+  else if (ButtonMatrixState == 1 && count ==11 && ButtonMatrixState  != 0)
                {
            	  ans =((uint64_t)ans )||0b11111111111;
                }
 
-  else if (ans == 0b11111111111  && ButtonMatrixState ==32768 )
+  else if (ans == 0b11111111111  && ButtonMatrixState ==32768 && ButtonMatrixState  != 0 )
   {
 	  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_9, GPIO_PIN_RESET);
 
   }
-  else if (ButtonMatrixState == 8)
+  else if (ButtonMatrixState == 8 && ButtonMatrixState  != 0)
                  {
              	  ans =0b0;
              	  count=1;
                  }
-  else
+  else if(ButtonMatrixState  != 0 && ButtonMatrixState  != 64 && ButtonMatrixState  != 512 && ButtonMatrixState  != 1024 && ButtonMatrixState  != 4096 && ButtonMatrixState  != 16 &&  ButtonMatrixState  != 1 && ButtonMatrixState  != 8)
    {
  	  ans=555;
 
